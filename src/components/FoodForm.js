@@ -1,28 +1,50 @@
 import { useState } from "react";
 
+function validate(type, value) {
+  switch (type) {
+    case "number":
+      return Number(value) || 0;
+
+    default:
+      return value;
+  }
+}
+
 function FoodForm() {
-  const [title, setTitle] = useState("");
-  const [calorie, setCalorie] = useState(0);
-  const [content, setContent] = useState("");
+  const [values, setValues] = useState({
+    title: "",
+    calorie: 0,
+    content: "",
+  });
 
-  const hadleTitleChange = (e) => {
-    setTitle(e.target.value);
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: validate(type, value),
+    }));
   };
 
-  const hadleCalorieChange = (e) => {
-    const newCalorie = Number(e.target.value) || 0;
-    setCalorie(newCalorie);
-  };
-
-  const hadleContentChange = (e) => {
-    setContent(e.target.value);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(values);
   };
 
   return (
-    <form>
-      <input name="title" onChange={hadleTitleChange}></input>
-      <input type="number" name="calorie" onChange={hadleCalorieChange}></input>
-      <input name="content" onChange={hadleContentChange}></input>
+    <form onSubmit={handleSubmit}>
+      <input name="title" value={values.title} onChange={handleChange}></input>
+      <input
+        type="number"
+        name="calorie"
+        value={values.calorie}
+        onChange={handleChange}
+      ></input>
+      <input
+        name="content"
+        value={values.content}
+        onChange={handleChange}
+      ></input>
+      <button type="submit">확인</button>
     </form>
   );
 }
