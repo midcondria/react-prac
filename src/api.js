@@ -1,14 +1,13 @@
-export async function getReviews({
-  order = "createdAt",
-  offset = 0,
-  limit = 6,
+export async function getFoods({
+  order = "",
+  cursor = "",
+  limit = 10,
+  search = "",
 }) {
-  const query = `order=${order}&offset=${offset}&limit=${limit}`;
-  const response = await fetch(
-    `https://learn.codeit.kr/api/film-reviews?${query}`
-  );
+  const query = `order=${order}&cursor=${cursor}&limit=${limit}&search=${search}`;
+  const response = await fetch(`https://learn.codeit.kr/api/foods?${query}`);
   if (!response.ok) {
-    throw new Error("리뷰를 불러오는데 실패했습니다");
+    throw new Error("데이터를 불러오는데 실패했습니다");
   }
   const body = await response.json();
   return body;
