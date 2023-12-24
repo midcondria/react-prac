@@ -2,14 +2,19 @@ import { useState } from "react";
 import "./ReviewForm.css";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
+import { createReview } from "../api";
 
-function ReviewForm() {
-  const [values, setValues] = useState({
-    title: "",
-    rating: 0,
-    content: "",
-    imgFile: null,
-  });
+const INITIAL_VALUES = {
+  title: "",
+  rating: 0,
+  content: "",
+  imgFile: null,
+};
+
+function ReviewForm({ onSubmitSuccess }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittingError, setSubmittingError] = useState(null);
+  const [values, setValues] = useState(INITIAL_VALUES);
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -23,9 +28,28 @@ function ReviewForm() {
     handleChange(name, value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(values);
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("rating", values.rating);
+    formData.append("content", values.content);
+    formData.append("imgFile", values.imgFile);
+
+    let result;
+    try {
+      setSubmittingError(null);
+      setIsSubmitting(true);
+      result = await createReview(formData);
+    } catch (error) {
+      setSubmittingError(error);
+      return;
+    } finally {
+      setIsSubmitting(false);
+    }
+    const { review } = result;
+    onSubmitSuccess(review);
+    setValues(INITIAL_VALUES);
   };
 
   return (
@@ -42,8 +66,15 @@ function ReviewForm() {
         value={values.rating}
         onChange={handleChange}
       />
-      <textarea name="content" value={values.content} onChange={handleChange} />
-      <button type="submit">확인</button>
+      <textarea
+        name="content"
+        value={values.content}
+        onChange={handleInputChange}
+      />
+      <button type="submit" disabled={isSubmitting}>
+        확인
+      </button>
+      {submittingError?.message && <div>{submittingError.message}</div>}
     </form>
   );
 }
