@@ -1,5 +1,13 @@
 import { useState } from "react";
 import FileInput from "./FileInput";
+import { createFood } from "../api";
+
+const INITIAL_VALUE = {
+  imgFile: null,
+  title: "",
+  calorie: 0,
+  content: "",
+};
 
 function sanitize(type, value) {
   switch (type) {
@@ -11,17 +19,32 @@ function sanitize(type, value) {
   }
 }
 
-function FoodForm() {
-  const [values, setValues] = useState({
-    imgFile: null,
-    title: "",
-    calorie: 0,
-    content: "",
-  });
+function FoodForm({ onSubmitSuccess }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittingError, setSubmittingError] = useState(null);
+  const [values, setValues] = useState(INITIAL_VALUE);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(values);
+    const formData = new FormData();
+    formData.append("imgFile", values.imgFile);
+    formData.append("title", values.title);
+    formData.append("calorie", values.calorie);
+    formData.append("content", values.content);
+    let result;
+    try {
+      setSubmittingError(null);
+      setIsSubmitting(true);
+      result = await createFood(formData);
+    } catch (error) {
+      setSubmittingError(error);
+      return;
+    } finally {
+      setIsSubmitting(false);
+    }
+    const { food } = result;
+    onSubmitSuccess(food);
+    setValues(INITIAL_VALUE);
   };
 
   const handleChange = (name, value) => {
@@ -55,7 +78,10 @@ function FoodForm() {
         value={values.content}
         onChange={handleInputChange}
       />
-      <button type="submit">확인</button>
+      <button type="submit" disabled={isSubmitting}>
+        확인
+      </button>
+      {submittingError && <div>{submittingError.message}</div>}
     </form>
   );
 }

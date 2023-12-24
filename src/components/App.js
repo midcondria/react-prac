@@ -59,6 +59,10 @@ function App() {
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
+  const handleSubmitSuccess = (food) => {
+    setItems((prevItems) => [food, ...prevItems]);
+  };
+
   useEffect(() => {
     handleLoad({
       order,
@@ -68,7 +72,7 @@ function App() {
 
   return (
     <div>
-      <FoodForm />
+      <FoodForm onSubmitSuccess={handleSubmitSuccess} />
       <button onClick={handleNewestClick}>최신순</button>
       <button onClick={handleCalorieClick}>칼로리순</button>
       <form onSubmit={handleSearchSubmit}>
