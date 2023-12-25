@@ -32,7 +32,18 @@ export async function updateReview(id, formData) {
     body: formData,
   });
   if (!response.ok) {
-    throw new Error("리뷰 생성에 실패했습니다");
+    throw new Error("리뷰 수정에 실패했습니다");
+  }
+  const body = await response.json();
+  return body;
+}
+
+export async function deleteReview(id) {
+  const response = await fetch(`${BASE_URL}/film-reviews/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error("리뷰 삭제에 실패했습니다");
   }
   const body = await response.json();
   return body;

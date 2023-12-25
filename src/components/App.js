@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
-import { createReview, getReviews, updateReview } from "../api";
+import { createReview, deleteReview, getReviews, updateReview } from "../api";
 
 const LIMIT = 6;
 
@@ -17,11 +17,6 @@ function App() {
   const handleNewestClick = () => setOrder("createdAt");
 
   const handleBestClick = () => setOrder("rating");
-
-  const handleDelete = (id) => {
-    const nextItems = items.filter((item) => item.id !== id);
-    setItems(nextItems);
-  };
 
   const handleLoad = async (options) => {
     let result;
@@ -44,6 +39,13 @@ function App() {
     }
     setOffset(options.offset + options.limit);
     setHasNext(paging.hasNext);
+  };
+
+  const handleDelete = async (id) => {
+    const result = await deleteReview(id);
+    if (!result) return;
+
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
   const handleLoadMore = async () => {
