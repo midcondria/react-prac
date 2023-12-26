@@ -1,5 +1,6 @@
 import { useState } from "react";
 import FileInput from "./FileInput";
+import useAsync from "./hooks/useAsync";
 
 const INITIAL_VALUE = {
   imgFile: null,
@@ -25,8 +26,7 @@ function FoodForm({
   onSubmit,
   onCancel,
 }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittingError, setSubmittingError] = useState(null);
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
   const [values, setValues] = useState(initialValues);
 
   const handleSubmit = async (e) => {
@@ -36,17 +36,9 @@ function FoodForm({
     formData.append("title", values.title);
     formData.append("calorie", values.calorie);
     formData.append("content", values.content);
-    let result;
-    try {
-      setSubmittingError(null);
-      setIsSubmitting(true);
-      result = await onSubmit(formData);
-    } catch (error) {
-      setSubmittingError(error);
-      return;
-    } finally {
-      setIsSubmitting(false);
-    }
+    let result = await onSubmitAsync(formData);
+    if (!result) return;
+
     const { food } = result;
     onSubmitSuccess(food);
     setValues(INITIAL_VALUE);

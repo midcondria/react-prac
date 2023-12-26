@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { createFood, deleteFood, getFoods, updateFood } from "../api";
 import FoodList from "./FoodList";
 import FoodForm from "./FoodForm";
+import useAsync from "./hooks/useAsync";
 
 function App() {
   const [order, setOrder] = useState("createdAt");
   const [cursor, setCursor] = useState(null);
   const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingError, setLoadingError] = useState(null);
+  const [isLoading, loadingError, getFoodsAsync] = useAsync(getFoods);
   const [search, setSearch] = useState("");
 
   const handleNewestClick = () => setOrder("createdAt");
@@ -22,17 +22,9 @@ function App() {
   };
 
   const handleLoad = async (options) => {
-    let result;
-    try {
-      setLoadingError(null);
-      setIsLoading(true);
-      result = await getFoods(options);
-    } catch (error) {
-      setLoadingError(error);
-      return;
-    } finally {
-      setIsLoading(false);
-    }
+    let result = await getFoodsAsync(options);
+    if (!result) return;
+
     const {
       foods,
       paging: { nextCursor },
