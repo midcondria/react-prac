@@ -3,7 +3,6 @@ import "./ReviewForm.css";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import useAsync from "./hooks/useAsync";
-import { updateReview } from "../api";
 
 const INITIAL_VALUES = {
   title: "",

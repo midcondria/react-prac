@@ -1,4 +1,4 @@
-const BASE_URL = "https://learn.codeit.kr/api";
+const BASE_URL = "https://learn.codeit.kr/5967";
 
 export async function getReviews({
   order = "createdAt",
