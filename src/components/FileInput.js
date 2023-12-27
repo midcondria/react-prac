@@ -32,7 +32,7 @@ function FileInput({ initialPreview, name, value, onChange }) {
 
   return (
     <div>
-      {(initialPreview || value) && <img src={preview} />}
+      {(initialPreview || value) && <img src={preview} alt="미리보기" />}
       <input type="file" onChange={handleChange} ref={inputRef} />
       {value && (
         <button type="button" onClick={handleClearClick}>

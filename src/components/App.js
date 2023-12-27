@@ -3,11 +3,10 @@ import { createFood, deleteFood, getFoods, updateFood } from "../api";
 import FoodList from "./FoodList";
 import FoodForm from "./FoodForm";
 import useAsync from "./hooks/useAsync";
-import LocaleContext from "./contexts/LocaleContext";
+import { LocaleProvider } from "./contexts/LocaleContext";
 import LocaleSelect from "./LocaleSelect";
 
 function App() {
-  const [locale, setLocale] = useState("ko");
   const [order, setOrder] = useState("createdAt");
   const [cursor, setCursor] = useState(null);
   const [items, setItems] = useState([]);
@@ -77,9 +76,9 @@ function App() {
   }, [order, search, handleLoad]);
 
   return (
-    <LocaleContext.Provider value={locale}>
+    <LocaleProvider defaultValue="ko">
       <div>
-        <LocaleSelect value={locale} onChange={setLocale} />
+        <LocaleSelect />
         <div>
           <button onClick={handleNewestClick}>최신순</button>
           <button onClick={handleCalorieClick}>칼로리순</button>
@@ -102,7 +101,7 @@ function App() {
         )}
         {loadingError && <p>{loadingError.message}</p>}
       </div>
-    </LocaleContext.Provider>
+    </LocaleProvider>
   );
 }
 
