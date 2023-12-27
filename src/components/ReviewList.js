@@ -28,6 +28,7 @@ function ReviewListItem({ item, onDelete, onEdit }) {
         <Rating value={item.rating} />
         <p>{formatDate(item.createdAt)}</p>
         <p>{item.content}</p>
+        <p>현재언어: {locale}</p>
         <button onClick={handleDeleteClick}>삭제</button>
         <button onClick={handleEditClick}>수정</button>
       </div>
