@@ -1,5 +1,8 @@
-function LocaleSelect({ onChange }) {
-  const handleChange = (e) => onChange(e.target.value);
+import { useSetLocale } from "./contexts/LocaleContext";
+
+function LocaleSelect() {
+  const setLocale = useSetLocale();
+  const handleChange = (e) => setLocale(e.target.value);
 
   return (
     <select onChange={handleChange}>
